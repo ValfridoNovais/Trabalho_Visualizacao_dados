@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de .gitignore - 19º BPM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col items-center justify-center p-4">
+
+    <div class="w-full max-w-5xl bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col h-[90vh]">
+        
+                <div class="bg-indigo-900 text-white p-4 flex justify-between items-center shrink-0">
+            <div>
+                <h1 class="text-lg font-bold">Configuração Final de Deploy</h1>
+                <p class="text-xs text-indigo-200">Dockerfile, .gitignore e Comandos Git consolidados.</p>
+            </div>
+            <button onclick="copyToClipboard()" class="bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-6 rounded-lg shadow transition duration-200 flex items-center gap-2 border border-green-400 cursor-pointer">
+                <i class="fas fa-copy"></i>
+                <span>COPIAR TUDO</span>
+            </button>
+        </div>
+
+                <div class="flex-grow relative bg-gray-50">
+            <textarea id="source-code" class="w-full h-full p-6 font-mono text-sm text-gray-800 bg-[#f8f9fa] focus:outline-none resize-none border-none" readonly spellcheck="false">
+# ===============================================
+# 1. ARQUIVO: Dockerfile (Ajustado para buscar renv.lock na raiz)
+# ===============================================
+# Usa uma imagem base que já tem R e dependências essenciais
+FROM rocker/r-ver:4.4.0
+
+# 1. Instala dependências de sistema necessárias para pacotes como 'sf'
+RUN apt-get update && apt-get install -y \
+    libxml2-dev \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libgdal-dev \
+    libgeos-dev \
+    libproj-dev
+
+# 2. Define o diretório de trabalho
+WORKDIR /app
+
+# 3. Copia o arquivo renv.lock da RAIZ do projeto e restaura o ambiente R
+# O renv.lock garante as versões corretas
+COPY renv.lock ./
+# Instala o renv, restaura as dependências do lock file
+RUN R -e "install.packages('renv', repos = 'https://cloud.r-project.org')"
+RUN R -e "renv::restore(prompt = FALSE)"
+
+# 4. Copia o restante do código da aplicação
+COPY . .
+
+# 5. Expõe a porta que o Shiny usa (8080 conforme .easypanel.json)
+EXPOSE 8080
+
+# 6. Comando para iniciar o servidor Shiny
+# O app.R está em app/dashboard-principal/app.R
+CMD ["Rscript", "app/dashboard-principal/app.R"]
+
+
+# ===============================================
+# 2. ARQUIVO: .gitignore (Criar/Atualizar na RAIZ)
+# ===============================================
+# Arquivos e Diretórios Ignorados
+# Configuração para Projetos R / RStudio / Renv
+
+# R / RStudio
+.Rproj
+.Rhistory
+.RData
+.Ruserdata
+.Rprofile
+# .libPaths
+*.so
+*.o
+
+# Renv (Arquivos de Ambiente Local - NÃO COMMITAR!)
+/renv/
+# renv.lock DEVE SER COMMITADO
+
+# Resultados de Build / Temporários
+/www/print_dashboard.png
+/relatorios/_site/
+.DS_Store
+*.swp
+*~
+
+
+# ===============================================
+# 3. COMANDOS GIT CONSOLIDADOS (Execute na raiz do projeto)
+# ===============================================
+# 1. Remove o arquivo renv.lock antigo e inválido
+git rm app/dashboard-principal/renv.lock
+
+# 2. Adiciona os arquivos atualizados (Dockerfile e .gitignore)
+git add Dockerfile
+git add .gitignore
+
+# 3. Adiciona o renv.lock JSON VÁLIDO (que está na raiz)
+git add renv.lock
+
+# 4. Faz o commit final
+git commit -m "chore(deploy): Configuração final para Dockerfile e Renv centralizado" \
+-m "" \
+-m "Este commit corrige o Dockerfile para buscar o renv.lock na raiz do projeto (centralizando o gerenciamento de dependências) e inclui um .gitignore robusto para R/Shiny/Renv." \
+-m "" \
+-m "Ações:" \
+-m "* Dockerfile ajustado para 'COPY renv.lock ./' (Linha 18)." \
+-m "* renv.lock (JSON válido) movido para a raiz." \
+-m "* Exclui o arquivo renv.lock antigo da pasta app/dashboard-principal/." \
+-m "* Adiciona .gitignore para ignorar arquivos locais de desenvolvimento."
+
+# 5. Envia o commit para o GitHub
+git push origin main
+</textarea>
+        </div>
+    </div>
+
+        <div id="toast" class="fixed bottom-10 right-10 bg-green-600 text-white px-6 py-4 rounded-lg shadow-xl transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3 z-50">
+        <i class="fas fa-check-circle text-xl"></i>
+        <div>
+            <h4 class="font-bold">Código Copiado!</h4>
+            <p class="text-sm">Abra seu arquivo .gitignore e cole agora.</p>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const textarea = document.getElementById('source-code');
+            textarea.select();
+            textarea.setSelectionRange(0, 99999); // Para mobile
+
+            try {
+                document.execCommand('copy');
+                showToast();
+            } catch (err) {
+                console.error('Erro ao copiar', err);
+                alert('Erro ao copiar. Use Ctrl+C.');
+            }
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

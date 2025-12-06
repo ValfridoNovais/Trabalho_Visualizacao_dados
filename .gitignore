@@ -46,3 +46,27 @@ Thumbs.db
 # descomente a linha abaixo para não enviar o mapa:
 # *.geojson
             
+
+            # Arquivos e Diretórios Ignorados
+# Configuração para Projetos R / RStudio / Renv
+
+# R / RStudio
+.Rproj
+.Rhistory
+.RData
+.Ruserdata
+.Rprofile
+# .libPaths
+*.so
+*.o
+
+# Renv (Arquivos de Ambiente Local - NÃO COMMITAR!)
+/renv/
+# renv.lock DEVE SER COMMITADO
+
+# Resultados de Build / Temporários
+/www/print_dashboard.png
+/relatorios/_site/
+.DS_Store
+*.swp
+*~

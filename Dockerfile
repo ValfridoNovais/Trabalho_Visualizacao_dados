@@ -13,9 +13,9 @@ RUN apt-get update && apt-get install -y \
 # 2. Define o diretório de trabalho
 WORKDIR /app
 
-# 3. Copia o arquivo renv.lock e restaura o ambiente R
+# 3. Copia o arquivo renv.lock da RAIZ do projeto e restaura o ambiente R
 # O renv.lock garante as versões corretas
-COPY app/dashboard-principal/renv.lock ./
+COPY renv.lock ./
 # Instala o renv, restaura as dependências do lock file
 RUN R -e "install.packages('renv', repos = 'https://cloud.r-project.org')"
 RUN R -e "renv::restore(prompt = FALSE)"
@@ -27,6 +27,5 @@ COPY . .
 EXPOSE 8080
 
 # 6. Comando para iniciar o servidor Shiny
-# O WORKING_DIRECTORY em .easypanel.json é /app/dashboard-principal
 # O app.R está em app/dashboard-principal/app.R
 CMD ["Rscript", "app/dashboard-principal/app.R"]
