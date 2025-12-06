@@ -1,0 +1,34 @@
+{
+  "services": {
+    "portal": {
+      "type": "static",
+      "build": false,
+      "root": "static"
+    },
+    "dashboards": {
+      "type": "app",
+      "source": {
+        "type": "git",
+        "branch": "main"
+      },
+      "build": {
+        "buildpack": "r"
+      },
+      "working_directory": "/app/dashboard-principal",
+      "start_command": "Rscript app.R",
+      "ports": {
+        "8080": "http"
+      },
+      "path": "/dashboards/"
+    },
+    "relatorios": {
+      "type": "static",
+      "build": {
+        "buildpack": "quarto"
+      },
+      "root": "relatorios",
+      "output": "_site",
+      "path": "/relatorios/"
+    }
+  }
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal de Inteligência – 19º BPM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .bg-bpm { background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%); }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="min-h-screen bg-bpm text-white py-16 px-6">
+    <div class="max-w-5xl mx-auto text-center">
+      <img src="/www/logo-19bpm.png" alt="19º BPM" class="h-24 mx-auto mb-8 rounded-lg shadow-2xl">
+      <h1 class="text-5xl font-bold mb-4">Portal de Inteligência</h1>
+      <p class="text-2xl mb-12">19º Batalhão de Polícia Militar</p>
+
+      <div class="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto">
+        <!-- Dashboard Dinâmico -->
+        <a href="/app/" class="block bg-white text-gray-900 rounded-2xl shadow-2xl p-10 hover:scale-105 transition transform">
+          <div class="text-6xl mb-4">Chart Line</div>
+          <h2 class="text-3xl font-bold mb-3">Dashboard Dinâmico</h2>
+          <p class="text-lg opacity-80">Filtros em tempo real<br>Batalhão → Cia → Pelotão → Destacamento</p>
+        </a>
+
+        <!-- Relatórios Estáticos -->
+        <a href="/relatorios/" class="block bg-white text-gray-900 rounded-2xl shadow-2xl p-10 hover:scale-105 transition transform">
+          <div class="text-6xl mb-4">File Text</div>
+          <h2 class="text-3xl font-bold mb-3">Relatórios Estáticos</h2>
+          <p class="text-lg opacity-80">Documentos mensais prontos<br>HTML · PDF · Impressão</p>
+        </a>
+      </div>
+
+      <footer class="mt-20 text-center opacity-80">
+        <p>© 2025 – 19º BPM | Seção de Inteligência</p>
+        <p class="text-sm mt-2">Atualizado em: <span id="date"></span></p>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("date").textContent = new Date().toLocaleString('pt-BR');
+  </script>
+</body>
+</html>
